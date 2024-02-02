@@ -1,3 +1,4 @@
+//installing bcrypt will (hash your password) and JWT (jasonwebtoken) will create tokens
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose, { Schema } from "mongoose";
@@ -32,6 +33,9 @@ const userSchema = new Schema({
     avatar: {
         type: "string",
     },
+    coverImage: {
+        type: "string"
+    },
     watchHistory: [
         {
             type: Schema.Types.ObjectId,
@@ -49,10 +53,13 @@ const userSchema = new Schema({
 
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
+
     this.password = bcrypt.hash(this.password, 10)
     next()
 })
 
-export const User = mongoose.model("User", userSchema);
+userSchema.methods.isPasswordCorrect = async function(password){
+    return await bcrypt.compare(password, this.password)
+}
 
-//installing bcrypt and jasonwebtoken for hide pass and token 
+export const User = mongoose.model("User", userSchema);

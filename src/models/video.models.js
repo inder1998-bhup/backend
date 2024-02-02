@@ -22,7 +22,7 @@ const videoSchema = new Schema({
         type: Number, //cloudnary url
         required: true
     },
-    thumbnail: {
+    views: {
         type: Number,
         default: 0
     },
